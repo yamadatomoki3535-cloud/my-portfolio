@@ -1,0 +1,10 @@
+{{ if lt hugo.Version "0.146.0" }}{{ errorf "Hugo 0.146.0 以上が必要です。" }}{{ end }}
+<!DOCTYPE html>
+<html lang="{{ site.Language.LanguageCode }}" dir="ltr" data-theme="{{ site.Params.defaultTheme | default "light" }}">
+<head>{{ partial "head.html" . }}</head>
+<body{{ if ne .Kind "page" }} class="list"{{ end }} id="top">
+  {{ partial "header.html" . }}
+  <main class="main" id="main-content" tabindex="-1">{{ block "main" . }}{{ end }}</main>
+  {{ partialCached "footer.html" . .Layout .Kind (.Param "hideFooter") (.Param "ShowCodeCopyButtons") }}
+</body>
+</html>

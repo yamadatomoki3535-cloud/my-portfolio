@@ -1,0 +1,63 @@
+{{ define "main" }}
+<div class="portfolio-home">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="eyebrow-line"></span>{{ site.Params.home.eyebrow }}</p>
+      <h1 id="hero-title">{{ site.Params.home.headline }}</h1>
+      <p class="hero-affiliation">{{ site.Params.profile.affiliation }}</p>
+      <p class="hero-description">{{ site.Params.home.tagline }}</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="{{ (site.GetPage "/projects").RelPermalink }}">制作物を見る <span aria-hidden="true">↗</span></a>
+        <a class="text-link" href="{{ (site.GetPage "/about").RelPermalink }}">自己紹介 <span aria-hidden="true">→</span></a>
+      </div>
+      {{ with site.Params.profile.github }}
+      <a class="github-link" href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ partial "portfolio/icon.html" "github" }}<span>GitHub</span><span aria-hidden="true">↗</span></a>
+      {{ end }}
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="visual-label"><span>IDEAS INTO PRACTICE</span><span>EXPLORATION</span></div>
+      <svg class="idea-graph" viewBox="0 0 440 270" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="currentColor" opacity=".13"/></pattern></defs>
+        <rect width="440" height="270" fill="url(#dots)"/>
+        <g stroke="currentColor" stroke-opacity=".2"><path d="M90 74L220 135L347 67M75 202L220 135L356 206M220 135L217 27M220 135L222 243"/><circle cx="220" cy="135" r="71" stroke-dasharray="3 6"/><circle cx="220" cy="135" r="102" stroke-opacity=".08"/></g>
+        <g fill="var(--theme)" stroke="currentColor" stroke-opacity=".2"><rect x="65" y="56" width="50" height="36" rx="8"/><rect x="322" y="49" width="50" height="36" rx="8"/><rect x="50" y="184" width="50" height="36" rx="8"/><rect x="331" y="188" width="50" height="36" rx="8"/><circle cx="217" cy="27" r="6"/><circle cx="222" cy="243" r="6"/></g>
+        <g fill="currentColor" opacity=".7" font-family="monospace" font-size="12" text-anchor="middle"><text x="90" y="78">ML</text><text x="347" y="71">LLM</text><text x="75" y="206">VLM</text><text x="356" y="210">IR</text></g>
+        <rect x="189" y="104" width="62" height="62" rx="16" fill="currentColor"/>
+        <g stroke="var(--theme)" stroke-width="2.5" stroke-linecap="round"><path d="M207 135H233M220 122V148M211 126L229 144M229 126L211 144"/></g>
+      </svg>
+      <div class="visual-caption"><p>問いを見つける。<br>つくって、確かめる。</p><span>LEARN. BUILD. EXPLORE.</span></div>
+    </div>
+  </section>
+
+  {{ $work := where site.RegularPages "Section" "in" (slice "projects" "research") }}
+  {{ $featured := where $work "Params.featured" true }}
+  {{ with $featured.ByDate.Reverse }}
+  <section class="home-section" aria-labelledby="featured-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">SELECTED WORK</p><h2 id="featured-title">注目のプロジェクト</h2></div>
+      <a class="text-link" href="{{ (site.GetPage "/projects").RelPermalink }}">すべての制作物 <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="featured-grid">{{ range first 4 . }}{{ partial "portfolio/card.html" . }}{{ end }}</div>
+  </section>
+  {{ end }}
+
+  {{ $research := where site.RegularPages "Section" "research" }}
+  {{ if or $research site.Params.showEmptySections }}
+  <section class="home-section interests-section" aria-labelledby="interests-title">
+    <div class="interests-intro"><p class="eyebrow">RESEARCH INTERESTS</p><h2 id="interests-title">いま、関心のあること。</h2><p>言語、画像、そしてデータ。<br>それぞれをつなぐ技術を学んでいきます。</p><a class="text-link" href="{{ (site.GetPage "/research").RelPermalink }}">研究について <span aria-hidden="true">→</span></a></div>
+    <ol class="interest-list">{{ range $i, $interest := site.Params.profile.interests }}<li><span class="interest-number">{{ printf "%02d" (add $i 1) }}</span><span>{{ $interest }}</span><span class="interest-plus" aria-hidden="true">+</span></li>{{ end }}</ol>
+  </section>
+  {{ end }}
+
+  {{ $latest := where site.RegularPages "Section" "in" (slice "projects" "research" "awards" "publications") }}
+  {{ $latest = where $latest "Params.sample" "ne" true }}
+  {{ with $latest.ByDate.Reverse }}
+  <section class="home-section" aria-labelledby="latest-title">
+    <div class="section-heading"><div><p class="eyebrow">LATEST UPDATES</p><h2 id="latest-title">最新の成果・発表</h2></div></div>
+    <div class="updates-list">{{ range first 5 . }}<a class="update-row" href="{{ .RelPermalink }}"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006.01.02" }}</time><span class="update-kind">{{ .CurrentSection.Title }}</span><span class="update-title">{{ .Title }}</span><span aria-hidden="true">↗</span></a>{{ end }}</div>
+  </section>
+  {{ end }}
+
+  <section class="contact-strip"><div><p class="eyebrow">LET’S CONNECT</p><h2>活動やコードは、GitHubへ。</h2><p>研究・制作に関するリンクをまとめています。</p></div><a class="button button-outline" href="{{ (site.GetPage "/contact").RelPermalink }}">連絡先を見る <span aria-hidden="true">↗</span></a></section>
+</div>
+{{ end }}

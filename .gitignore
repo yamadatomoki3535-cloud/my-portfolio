@@ -1,0 +1,19 @@
+# Hugo build output and local caches
+/public/
+/resources/_gen/
+/.hugo_build.lock
+/hugo_stats.json
+
+# Local tools and configuration (do not commit secrets)
+/.tools/
+/.cache/
+/.env
+/.env.*
+!.env.example
+
+# Editor and operating system files
+/.vscode/
+/.idea/
+.DS_Store
+Thumbs.db
+*.swp

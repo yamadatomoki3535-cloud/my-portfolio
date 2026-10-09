@@ -1,0 +1,97 @@
+baseURL = "https://yamadatomoki3535-cloud.github.io/my-portfolio/"
+title = "My Portfolio"
+theme = "PaperMod"
+languageCode = "ja"
+defaultContentLanguage = "ja"
+timeZone = "Asia/Tokyo"
+hasCJKLanguage = true
+enableRobotsTXT = true
+summaryLength = 80
+buildFuture = false
+
+[pagination]
+  pagerSize = 12
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+
+[markup.goldmark.renderer]
+  unsafe = false
+
+[markup.highlight]
+  noClasses = false
+
+[params]
+  description = "静岡大学 情報学部。機械学習・LLM・VLM・情報検索に関心を持つ学生の研究と制作のポートフォリオ。"
+  keywords = ["ポートフォリオ", "静岡大学", "機械学習", "LLM", "VLM", "情報検索"]
+  defaultTheme = "light"
+  disableThemeToggle = false
+  ShowBreadCrumbs = true
+  ShowPostNavLinks = true
+  ShowCodeCopyButtons = true
+  ShowReadingTime = false
+  ShowToc = true
+  TocOpen = false
+  DateFormat = "2006.01.02"
+  mainSections = ["projects", "research"]
+  # false にすると、未登録の Research / Awards / Publications をナビから隠します。
+  showEmptySections = true
+
+  [params.home]
+    eyebrow = "RESEARCH & DEVELOPMENT"
+    headline = "学びを、かたちに。"
+    tagline = "データとAIの可能性を探りながら、研究とものづくりに取り組んでいきます。"
+
+  # 未提供の氏名・経歴・習熟度は仮の情報として表示しています。
+  [params.profile]
+    name = "氏名を入力"
+    affiliation = "静岡大学 情報学部"
+    bio = "機械学習や言語・画像を扱うAIに関心があります。このサイトでは、研究や制作の過程と成果を整理していきます。"
+    github = "https://github.com/yamadatomoki3535-cloud"
+    interests = ["機械学習・深層学習", "大規模言語モデル（LLM）", "Vision-Language Model（VLM）", "情報検索", "LoRA"]
+    # ご自身が使用する技術に置き換えてください。初期値は編集用の例です。
+    skills = ["Python", "PyTorch", "scikit-learn", "Git / GitHub", "Hugo"]
+    skillsNote = "以下は編集用の初期例です。ご自身の経験や使用技術に合わせて更新してください。"
+
+  [params.assets]
+    favicon = "favicon.svg"
+    favicon16x16 = "favicon-16x16.png"
+    favicon32x32 = "favicon-32x32.png"
+    apple_touch_icon = "apple-touch-icon.png"
+    safari_pinned_tab = "favicon.svg"
+    theme_color = "#ffffff"
+    msapplication_TileColor = "#ffffff"
+
+  [params.cover]
+    responsiveImages = true
+    linkFullImages = false
+
+[[menu.main]]
+  name = "Home"
+  pageRef = "/"
+  weight = 10
+[[menu.main]]
+  name = "About"
+  pageRef = "/about"
+  weight = 20
+[[menu.main]]
+  name = "Projects"
+  pageRef = "/projects"
+  weight = 30
+[[menu.main]]
+  name = "Research"
+  pageRef = "/research"
+  weight = 40
+[[menu.main]]
+  name = "Awards"
+  pageRef = "/awards"
+  weight = 50
+[[menu.main]]
+  name = "Publications"
+  pageRef = "/publications"
+  weight = 60
+[[menu.main]]
+  name = "Contact"
+  pageRef = "/contact"
+  weight = 70

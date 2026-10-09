@@ -1,0 +1,12 @@
+- id: home
+  translation: "Home"
+- id: prev_page
+  translation: "前のページ"
+- id: next_page
+  translation: "次のページ"
+- id: toc
+  translation: "目次"
+- id: code_copy
+  translation: "コピー"
+- id: code_copied
+  translation: "コピーしました"

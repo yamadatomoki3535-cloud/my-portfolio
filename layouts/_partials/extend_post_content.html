@@ -1,0 +1,19 @@
+{{ if in (slice "projects" "research" "awards" "publications") .Section }}
+<aside class="detail-resources" aria-label="制作・研究情報">
+  <h2>関連情報</h2>
+  <dl class="metadata-list">
+    {{ with .Params.technologies }}<div><dt>使用技術</dt><dd>{{ delimit . " / " }}</dd></div>{{ end }}
+    {{ with .Params.models }}<div><dt>使用モデル</dt><dd>{{ delimit . " / " }}</dd></div>{{ end }}
+    {{ with .Params.organization }}<div><dt>主催団体</dt><dd>{{ . }}</dd></div>{{ end }}
+    {{ with .Params.authors }}<div><dt>著者</dt><dd>{{ delimit . "、" }}</dd></div>{{ end }}
+    {{ with .Params.venue }}<div><dt>学会・掲載先</dt><dd>{{ . }}</dd></div>{{ end }}
+    {{ with .Params.presentation }}<div><dt>発表形式</dt><dd>{{ . }}</dd></div>{{ end }}
+  </dl>
+  <div class="resource-links">
+    {{ with .Params.github }}<a class="button button-outline" href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ partial "portfolio/icon.html" "github" }} GitHub ↗</a>{{ end }}
+    {{ with .Params.pdf }}<a class="button button-outline" href="{{ partial "portfolio/image-url.html" (dict "src" . "page" $) }}" target="_blank" rel="noopener noreferrer">論文PDF ↗</a>{{ end }}
+    {{ range .Params.materials }}{{ if .url }}<a class="button button-outline" href="{{ partial "portfolio/image-url.html" (dict "src" .url "page" $) }}" target="_blank" rel="noopener noreferrer">{{ .label | default "関連資料" }} ↗</a>{{ end }}{{ end }}
+  </div>
+  <a class="text-link back-link" href="{{ .CurrentSection.RelPermalink }}">← {{ .CurrentSection.Title }} 一覧に戻る</a>
+</aside>
+{{ end }}
