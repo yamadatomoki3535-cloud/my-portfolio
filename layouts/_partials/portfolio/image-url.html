@@ -1,0 +1,13 @@
+{{- $src := .src -}}
+{{- $url := urls.Parse $src -}}
+{{- if not $url.IsAbs -}}
+  {{- $path := strings.TrimPrefix "/" (strings.TrimPrefix "./" $url.Path) -}}
+  {{- with or (.page.Resources.Get $path) (resources.Get $path) -}}
+    {{- $src = .RelPermalink -}}
+  {{- else -}}
+    {{- $src = $path | relURL -}}
+  {{- end -}}
+  {{- with $url.RawQuery }}{{ $src = printf "%s?%s" $src . }}{{ end -}}
+  {{- with $url.Fragment }}{{ $src = printf "%s#%s" $src . }}{{ end -}}
+{{- end -}}
+{{- return $src -}}

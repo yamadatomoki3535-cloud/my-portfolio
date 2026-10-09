@@ -1,0 +1,15 @@
+<article class="work-card">
+  <a class="card-image-link" href="{{ .RelPermalink }}" tabindex="-1" aria-hidden="true">
+    {{ with .Params.cover.image }}<img class="card-image" src="{{ partial "portfolio/image-url.html" (dict "src" . "page" $) }}" alt="{{ $.Params.cover.alt | default $.Title }}" loading="lazy" width="800" height="500">{{ else }}<div class="card-image card-placeholder"><span aria-hidden="true">↗</span><span>{{ .CurrentSection.Title }}</span></div>{{ end }}
+  </a>
+  <div class="card-body">
+    <div class="card-meta">{{ if not .Date.IsZero }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006.01.02" }}</time>{{ end }}{{ with .Params.categories }}<span class="meta-dot" aria-hidden="true">·</span>{{ range first 1 . }}<span>{{ . }}</span>{{ end }}{{ end }}{{ if .Params.sample }}<span class="sample-badge">サンプル</span>{{ end }}{{ if .Draft }}<span class="sample-badge">下書き</span>{{ end }}</div>
+    <h3><a href="{{ .RelPermalink }}">{{ .Title }} <span class="card-arrow" aria-hidden="true">↗</span></a></h3>
+    <p>{{ .Description | default (.Summary | plainify | truncate 150) }}</p>
+    {{ with .Params.technologies }}<ul class="technology-tags" aria-label="使用技術">{{ range . }}<li>{{ . }}</li>{{ end }}</ul>{{ end }}
+    {{ with .Params.organization }}<p class="record-caption">主催：{{ . }}</p>{{ end }}
+    {{ with .Params.authors }}<p class="record-caption">著者：{{ delimit . "、" }}</p>{{ end }}
+    {{ with .Params.venue }}<p class="record-caption">{{ . }}{{ with $.Params.presentation }} · {{ . }}{{ end }}</p>{{ end }}
+    <div class="card-links"><a class="text-link" href="{{ .RelPermalink }}">詳細を見る <span aria-hidden="true">→</span></a>{{ with .Params.github }}<a class="text-link" href="{{ . }}" target="_blank" rel="noopener noreferrer">GitHub ↗</a>{{ end }}{{ with .Params.pdf }}<a class="text-link" href="{{ partial "portfolio/image-url.html" (dict "src" . "page" $) }}" target="_blank" rel="noopener noreferrer">論文PDF ↗</a>{{ end }}</div>
+  </div>
+</article>

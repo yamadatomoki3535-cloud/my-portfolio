@@ -1,0 +1,13 @@
+{{ define "main" }}
+<div class="portfolio-list">
+  <header class="page-header">{{ partial "breadcrumbs.html" . }}<p class="eyebrow">{{ .Section | upper }}</p><h1>{{ .Title }}</h1>{{ with .Description }}<p class="post-description">{{ . }}</p>{{ end }}</header>
+  {{ $pages := .RegularPagesRecursive.ByDate.Reverse }}
+  {{ if $pages }}
+  {{ $paginator := .Paginate $pages }}
+  <div class="work-grid">{{ range $paginator.Pages }}{{ partial "portfolio/card.html" . }}{{ end }}</div>
+  {{ if gt $paginator.TotalPages 1 }}<nav class="pagination" aria-label="一覧のページ送り">{{ if $paginator.HasPrev }}<a class="prev" href="{{ $paginator.Prev.URL }}">← 前のページ</a>{{ end }}<span>{{ $paginator.PageNumber }} / {{ $paginator.TotalPages }}</span>{{ if $paginator.HasNext }}<a class="next" href="{{ $paginator.Next.URL }}">次のページ →</a>{{ end }}</nav>{{ end }}
+  {{ else }}
+  <div class="empty-state"><span class="empty-symbol" aria-hidden="true">＋</span><h2>これから、ここに。</h2>{{ with .Content }}<div class="md-content">{{ . }}</div>{{ else }}<p>公開できる内容がまとまり次第、掲載していきます。</p>{{ end }}<a class="text-link" href="{{ (site.GetPage "/projects").RelPermalink }}">制作物を見る <span aria-hidden="true">→</span></a></div>
+  {{ end }}
+</div>
+{{ end }}

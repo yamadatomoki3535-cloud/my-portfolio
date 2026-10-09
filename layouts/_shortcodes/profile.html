@@ -1,0 +1,14 @@
+{{ with site.Params.profile }}
+<div class="profile-summary"><span class="profile-mark" aria-hidden="true">m.</span><div><p class="eyebrow">PROFILE</p>{{ with .name }}<h2>{{ . }}</h2>{{ end }}{{ with .affiliation }}<p>{{ . }}</p>{{ end }}</div></div>
+{{ with .bio }}<p>{{ . }}</p>{{ end }}
+{{ with .interests }}
+<h2 id="interests">興味分野</h2>
+<ul>{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
+{{ end }}
+{{ with .skills }}
+<h2 id="skills">スキル・使用技術</h2>
+{{ with site.Params.profile.skillsNote }}<p class="content-note">{{ . }}</p>{{ end }}
+<ul class="technology-tags">{{ range . }}<li>{{ . }}</li>{{ end }}</ul>
+{{ end }}
+{{ with .github }}<p><a class="button button-outline" href="{{ . }}" target="_blank" rel="noopener noreferrer">{{ partial "portfolio/icon.html" "github" }} GitHub ↗</a></p>{{ end }}
+{{ end }}

@@ -1,0 +1,4 @@
+<figure{{ with .Get "class" }} class="{{ . }}"{{ end }}>
+<img src="{{ partial "portfolio/image-url.html" (dict "src" (.Get "src") "page" .Page) }}" alt="{{ .Get "alt" | default (.Get "caption") | default "" }}" loading="lazy"{{ with .Get "width" }} width="{{ . }}"{{ end }}{{ with .Get "height" }} height="{{ . }}"{{ end }}>
+{{ with .Get "caption" }}<figcaption>{{ . | markdownify }}</figcaption>{{ end }}
+</figure>
