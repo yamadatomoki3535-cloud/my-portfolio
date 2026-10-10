@@ -45,14 +45,12 @@ buildFuture = false
 
   # 未提供の氏名・経歴・習熟度は仮の情報として表示しています。
   [params.profile]
-    name = "氏名を入力"
+    name = "山田智生"
     affiliation = "静岡大学 情報学部"
     bio = "機械学習や言語・画像を扱うAIに関心があります。このサイトでは、研究や制作の過程と成果を整理していきます。"
     github = "https://github.com/yamadatomoki3535-cloud"
     interests = ["機械学習・深層学習", "大規模言語モデル（LLM）", "Vision-Language Model（VLM）", "情報検索", "LoRA"]
-    # ご自身が使用する技術に置き換えてください。初期値は編集用の例です。
     skills = ["Python", "PyTorch", "scikit-learn", "Git / GitHub", "Hugo"]
-    skillsNote = "以下は編集用の初期例です。ご自身の経験や使用技術に合わせて更新してください。"
 
   [params.assets]
     favicon = "favicon.svg"
