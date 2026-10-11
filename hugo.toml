@@ -43,11 +43,11 @@ buildFuture = false
     headline = "学びを、かたちに。"
     tagline = "データとAIの可能性を探りながら、研究とものづくりに取り組んでいきます。"
 
-  # 未提供の氏名・経歴・習熟度は仮の情報として表示しています。
+  # Home・About・Contact の共通プロフィールはここで管理します。
   [params.profile]
     name = "山田智生"
     affiliation = "静岡大学 情報学部"
-    bio = "機械学習や言語・画像を扱うAIに関心があります。このサイトでは、研究や制作の過程と成果を整理していきます。"
+    bio = "VLMの検索を研究テーマにしています。機械学習や言語・画像を扱うAIに関心があります。このサイトでは、研究や制作の過程と成果を整理していきます。"
     github = "https://github.com/yamadatomoki3535-cloud"
     interests = ["機械学習・深層学習", "大規模言語モデル（LLM）", "Vision-Language Model（VLM）", "情報検索", "LoRA"]
     skills = ["Python", "PyTorch", "scikit-learn", "Git / GitHub", "Hugo"]

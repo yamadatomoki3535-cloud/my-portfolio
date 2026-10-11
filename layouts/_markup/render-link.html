@@ -1,0 +1,1 @@
+<a href="{{ partial "portfolio/link-url.html" (dict "src" .Destination "page" .PageInner) }}"{{ with .Title }} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>

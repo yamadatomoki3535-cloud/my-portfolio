@@ -1,12 +1,17 @@
 ---
-title: "{{ replace .Name "-" " " | title }}"
+title: "{{ replace (path.Base (path.Dir .File.Path)) "-" " " | title }}"
 date: {{ .Date }}
 description: "実際に受賞した賞の概要を入力してください。"
+categories: []
+tags: []
 organization: ""
 materials: []
 sample: false
 draft: true
 ---
+
+<!-- 必須: title・date・description・draft。その他は任意です。
+空文字・空リストは表示されません。確認後に draft: false にすると公開されます。 -->
 
 ## 受賞について
 

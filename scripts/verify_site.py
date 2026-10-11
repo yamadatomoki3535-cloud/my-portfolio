@@ -167,6 +167,27 @@ def check_metadata(document: Element, expected_path: str):
         require(bool(metadata.get(name)), f"SEO/viewport メタデータが不足: {expected_path}: {name}")
 
 
+def check_body_link(document: Element, label: str, path: str, *, query: str = "", fragment: str = ""):
+    links = [link for link in document.find("a") if link.text == label]
+    require(len(links) == 1, f"Markdown本文のリンクが見つかりません: {label}")
+    href = links[0].attrs.get("href", "")
+    url = urlsplit(urljoin(BASE_URL, href))
+    require(url.netloc.lower() == "username.github.io" and unquote(url.path) == PREFIX + path
+            and url.query == query and unquote(url.fragment) == fragment,
+            f"Markdownリンクの公開パス・query・fragmentが不正: {label}: {href}")
+
+
+def check_unpublished(destination: Path, section: str, slug: str, title: str, category: str, tag: str):
+    require(not (destination / section / slug).exists(),
+            f"非公開記事のページ・バンドル画像・PDFが公開されます: {section}/{slug}")
+    forbidden = (slug, title, category, tag)
+    for path in destination.rglob("*"):
+        if path.is_file() and path.suffix in (".html", ".xml", ".json"):
+            text = path.read_text(encoding="utf-8")
+            require(not any(value in text for value in forbidden),
+                    f"非公開記事がホーム・一覧・分類・RSS・sitemapに含まれます: {path.relative_to(destination)}")
+
+
 def write_fixture(content: Path, section: str, slug: str, title: str, date: str,
                   extra: str = "", body: str = "", draft: bool = False):
     directory = content / section / slug
@@ -175,7 +196,7 @@ def write_fixture(content: Path, section: str, slug: str, title: str, date: str,
         f'---\ntitle: "{title}"\ndate: {date}\n'
         f'description: "一時ディレクトリにのみ作成する動作確認用コンテンツ。"\n'
         f'draft: {str(draft).lower()}\nsample: false\n{extra}---\n\n'
-        f'## 動作確認\n\n{body or "本文の表示を確認します。"}\n', encoding="utf-8")
+        f'## 動作確認 {{#verification}}\n\n{body or "本文の表示を確認します。"}\n', encoding="utf-8")
     (directory / "cover.svg").write_text(SVG, encoding="utf-8")
     # PDF の内容を検証するテストではなく、公開先リンクとコピーを確認します。
     (directory / "support.pdf").write_bytes(b"%PDF-1.4\n% temporary link fixture\n%%EOF\n")
@@ -238,27 +259,40 @@ def main():
 
         for section in ("projects", "research", "awards", "publications"):
             run([args.hugo, "new", "content", f"{section}/archetype-check/index.md",
-                 "--kind", section, "--source", str(source), "--noBuildLock"], source)
+                 "--source", str(source), "--noBuildLock"], source)
             markdown = (source / "content" / section / "archetype-check" / "index.md").read_text(encoding="utf-8")
             require("draft: true" in markdown and "## " in markdown,
                     f"記事テンプレートが正しく生成されません: {section}")
-        print("PASS Hugo new で4種類のMarkdownテンプレートを生成")
+            require(re.search(r'^title:\s*"Archetype Check"\s*$', markdown, re.MULTILINE),
+                    f"バンドルの記事タイトルがURL名から生成されません: {section}")
+            require("tags: []" in markdown and 'caption: ""' in markdown,
+                    f"タグ・画像の説明を記入する場所がありません: {section}")
+        print("PASS --kindなしのHugo newで4種類の下書き・URL名に基づくタイトルを生成")
 
         content = root / "fixture-content"
         shutil.copytree(empty_content, content)
         verification_image = source / "static" / "images" / "verification.svg"
         verification_image.parent.mkdir(parents=True, exist_ok=True)
         verification_image.write_text(SVG, encoding="utf-8")
+        verification_pdf = source / "static" / "files" / "verification.pdf"
+        verification_pdf.parent.mkdir(parents=True, exist_ok=True)
+        verification_pdf.write_bytes(b"%PDF-1.4\n% temporary shared link fixture\n%%EOF\n")
         image_body = '\n'.join([
             '![バンドル画像](cover.svg)',
             '![静的画像](/images/verification.svg)',
             '{{< figure src="cover.svg" alt="バンドルの図" caption="図の説明" >}}',
             '{{< figure src="/images/verification.svg" alt="静的な図" >}}',
+            '[本文バンドルPDF](support.pdf?download=1#page=1)',
+            '[本文共有PDF](/files/verification.pdf?download=1#page=1)',
+            '[本文自己紹介](/about/?ref=markdown#自己紹介)',
+            '[本文別記事](projects/verify-older-00/?ref=markdown#verification)',
+            '[本文内の見出し](#verification)',
+            '[本文外部リンク](https://example.com/reference?x=1#example)',
         ])
         write_fixture(content, "projects", "verify-newest", "検証プロジェクト・最新", "2099-01-20",
-                      'featured: true\ncategories: ["検証カテゴリ"]\n'
+                      'featured: true\ncategories: ["検証カテゴリ"]\ntags: ["検証タグ"]\n'
                       'technologies: ["検証技術"]\ngithub: "https://github.com/example/example"\n'
-                      'cover:\n  image: "cover.svg"\n  alt: "検証サムネイル"\n  relative: true\n'
+                      'cover:\n  image: "cover.svg"\n  alt: "検証サムネイル"\n  caption: "検証サムネイルの説明"\n  relative: true\n'
                       'materials:\n  - label: "検証資料"\n    url: "support.pdf"\n', image_body)
         write_fixture(content, "research", "verify-research", "検証研究", "2099-01-19",
                       'featured: true\nmodels: ["検証モデル"]\ntechnologies: ["検証研究技術"]\n'
@@ -271,11 +305,27 @@ def main():
         for index in range(12):
             write_fixture(content, "projects", f"verify-older-{index:02d}",
                           f"検証プロジェクト・過去{index:02d}", f"2099-01-{16-index:02d}")
-        write_fixture(content, "projects", "verify-draft", "検証下書き", "2099-01-21", draft=True)
+        empty_optional = ('categories: []\ntags: []\ntechnologies: []\nmodels: []\n'
+                          'organization: ""\nauthors: []\nvenue: ""\npresentation: ""\n'
+                          'github: ""\npdf: ""\nmaterials:\n  - label: ""\n    url: ""\n'
+                          'cover:\n  image: ""\n  alt: ""\n  caption: ""\n')
+        for section in ("projects", "research", "awards", "publications"):
+            write_fixture(content, section, "verify-minimal", "検証・任意項目を省略", "2098-01-02")
+            write_fixture(content, section, "verify-empty", "検証・任意項目を空欄", "2098-01-01", empty_optional)
+        write_fixture(content, "projects", "verify-draft", "検証下書き", "2099-01-21",
+                      'featured: true\ncategories: ["draft-private-category"]\ntags: ["draft-private-tag"]\n'
+                      'cover:\n  image: "cover.svg"\n  alt: "非公開下書きの画像"\n', image_body, draft=True)
+        write_fixture(content, "projects", "verify-future", "検証未来日", "2100-01-02",
+                      'featured: true\ncategories: ["future-private-category"]\ntags: ["future-private-tag"]\n'
+                      'cover:\n  image: "cover.svg"\n  alt: "非公開未来記事の画像"\n', image_body)
 
         destination = root / "fixtures"
         documents = build(args.hugo, source, destination, content=content, fixtures=True)
         require("projects/verify-draft/index.html" not in documents, "下書きが公開されます")
+        check_unpublished(destination, "projects", "verify-draft", "検証下書き",
+                          "draft-private-category", "draft-private-tag")
+        check_unpublished(destination, "projects", "verify-future", "検証未来日",
+                          "future-private-category", "future-private-tag")
         project_list = page(documents, "projects/")
         cards = project_list.find("article", class_name="work-card")
         require(len(cards) == 12, "一覧ページのページサイズが不正です")
@@ -299,7 +349,7 @@ def main():
                 PREFIX + "projects/verify-older-00/" not in featured_links,
                 "featuredによる注目のプロジェクトの選択が不正です")
         details = {
-            "projects/verify-newest/": ["検証技術", "検証資料"],
+            "projects/verify-newest/": ["検証技術", "検証資料", "検証カテゴリ", "検証タグ"],
             "research/verify-research/": ["検証モデル", "検証研究技術", "検証研究資料"],
             "awards/verify-award/": ["検証主催団体", "検証受賞資料"],
             "publications/verify-publication/": ["検証著者", "検証学会", "検証発表形式", "論文PDF", "検証発表資料"],
@@ -312,12 +362,33 @@ def main():
                         and "一覧に戻る" in e.text for e in document.find("a")),
                     f"一覧に戻るリンクがありません: {relative}")
         project = page(documents, "projects/verify-newest/")
+        require(any("検証サムネイルの説明" in caption.text for caption in project.find("figcaption")),
+                "cover.captionの画像説明が表示されません")
         images = [e.attrs.get("src") for e in project.find("img")]
         require(images.count(PREFIX + "projects/verify-newest/cover.svg") >= 2 and
                 images.count(PREFIX + "images/verification.svg") >= 2,
                 "Markdown画像またはfigureのパスが不正です")
+        check_body_link(project, "本文バンドルPDF", "projects/verify-newest/support.pdf", query="download=1", fragment="page=1")
+        check_body_link(project, "本文共有PDF", "files/verification.pdf", query="download=1", fragment="page=1")
+        check_body_link(project, "本文自己紹介", "about/", query="ref=markdown", fragment="自己紹介")
+        check_body_link(project, "本文別記事", "projects/verify-older-00/", query="ref=markdown", fragment="verification")
+        require(any(link.text == "本文内の見出し" and link.attrs.get("href") == "#verification"
+                    for link in project.find("a")), "本文内の見出しへのリンクが維持されません")
+        require(any(link.text == "本文外部リンク" and link.attrs.get("href") == "https://example.com/reference?x=1#example"
+                    for link in project.find("a")), "外部リンクのURLが維持されません")
+        for section in ("projects", "research", "awards", "publications"):
+            for slug in ("verify-minimal", "verify-empty"):
+                document = page(documents, f"{section}/{slug}/")
+                require(not any(heading.text == "関連情報" for heading in document.find("h2"))
+                        and not document.find("dl", class_name="metadata-list")
+                        and not document.find("div", class_name="resource-links"),
+                        f"任意項目が未入力なのに関連情報の空の見出し・枠が表示されます: {section}/{slug}")
+                require(any(link.attrs.get("href") == PREFIX + section + "/" and "一覧に戻る" in link.text
+                            for link in document.find("a")), f"任意項目がなくても一覧に戻れる必要があります: {section}/{slug}")
+                require(not any("cover.svg" in image.attrs.get("src", "") for image in document.find("img")),
+                        f"未指定のサムネイルが表示されます: {section}/{slug}")
         references = check_local_references(documents, destination)
-        print(f"PASS Markdown追加・日付順・注目記事・詳細情報・画像/PDF・ページ送り ({references} links)")
+        print(f"PASS Markdown追加・日付順・注目記事・任意項目・分類・画像説明・画像/PDF・本文リンク・ページ送り ({references} links)")
 
         draft_destination = root / "drafts"
         drafts = build(args.hugo, source, draft_destination, content=content, drafts=True, fixtures=True)
@@ -325,8 +396,24 @@ def main():
                 "--buildDraftsによる下書きプレビューができません")
         require(page(drafts, "").find("a", class_name="update-row")[0].attrs["href"]
                 == PREFIX + "projects/verify-draft/", "下書きプレビューの新着順が不正です")
+        require((draft_destination / "projects" / "verify-draft" / "cover.svg").is_file()
+                and (draft_destination / "projects" / "verify-draft" / "support.pdf").is_file(),
+                "下書きプレビューでバンドル画像・PDFを表示できません")
+        check_unpublished(draft_destination, "projects", "verify-future", "検証未来日",
+                          "future-private-category", "future-private-tag")
         check_local_references(drafts, draft_destination)
-        print("PASS 下書きは公開ビルドで非表示、--buildDraftsでプレビュー可能")
+        print("PASS 下書き・未来記事はホーム/分類/RSS/sitemap/資産から非公開、--buildDraftsで下書き確認可能")
+
+        # 一時コンテンツ内でのみ削除し、通常の再ビルドで一覧・注目・資産から外れることを確認します。
+        shutil.rmtree(content / "projects" / "verify-newest")
+        deleted_destination = root / "deleted"
+        deleted = build(args.hugo, source, deleted_destination, content=content, fixtures=True)
+        check_unpublished(deleted_destination, "projects", "verify-newest", "検証プロジェクト・最新",
+                          "検証カテゴリ", "検証タグ")
+        require(page(deleted, "").find("a", class_name="update-row")[0].attrs["href"]
+                == PREFIX + "research/verify-research/", "削除後のホーム新着一覧が更新されません")
+        check_local_references(deleted, deleted_destination)
+        print("PASS 記事フォルダー削除後はホーム・一覧・分類・RSS・sitemap・バンドル資産から消去")
 
         override = root / "hide-empty.toml"
         override.write_text("[params]\nshowEmptySections = false\n", encoding="utf-8")

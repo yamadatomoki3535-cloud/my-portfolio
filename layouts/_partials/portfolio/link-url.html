@@ -1,0 +1,17 @@
+{{- $src := .src -}}
+{{- $url := urls.Parse $src -}}
+{{- if and (not $url.IsAbs) (not $url.Host) $url.Path -}}
+  {{- $path := strings.TrimPrefix "/" (strings.TrimPrefix "./" $url.Path) -}}
+  {{- with .page.Resources.Get $path -}}
+    {{- $src = .RelPermalink -}}
+  {{- else -}}
+    {{- with or ($.page.GetPage $url.Path) (site.GetPage $path) -}}
+      {{- $src = .RelPermalink -}}
+    {{- else -}}
+      {{- $src = $path | relURL -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $url.RawQuery }}{{ $src = printf "%s?%s" $src . }}{{ end -}}
+  {{- with $url.Fragment }}{{ $src = printf "%s#%s" $src . }}{{ end -}}
+{{- end -}}
+{{- return $src -}}

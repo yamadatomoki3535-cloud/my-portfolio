@@ -1,8 +1,9 @@
 ---
-title: "{{ replace .Name "-" " " | title }}"
+title: "{{ replace (path.Base (path.Dir .File.Path)) "-" " " | title }}"
 date: {{ .Date }}
 description: "研究の概要を1〜2文で入力してください。"
 categories: []
+tags: []
 technologies: []
 models: []
 github: ""
@@ -13,8 +14,15 @@ draft: true
 cover:
   image: ""
   alt: ""
+  caption: ""
   relative: true
 ---
+
+<!-- 必須: title（タイトル）・date（日付）・description（概要）・draft（下書き）。
+その他は任意です。空文字・空リストは表示されません。
+画像は index.md と同じフォルダーに保存し、本文から ![図の説明](diagram.png) で参照します。
+確認後に draft: false にすると公開されます。featured: true でHomeの注目記事に表示します。
+-->
 
 ## 研究概要
 
@@ -32,7 +40,7 @@ cover:
 
 手法の仕組み、既存手法との違いを入力してください。
 
-<!-- 同じフォルダーに図を置く場合: ![提案手法の説明](method.png) -->
+<!-- 同じフォルダーに diagram.png を保存したら: ![提案手法の説明](diagram.png) -->
 
 ## 実験内容
 

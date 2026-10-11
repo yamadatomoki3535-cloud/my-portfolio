@@ -1,8 +1,9 @@
 ---
-title: "{{ replace .Name "-" " " | title }}"
+title: "{{ replace (path.Base (path.Dir .File.Path)) "-" " " | title }}"
 date: {{ .Date }}
 description: "プロジェクトの概要を1〜2文で入力してください。"
 categories: []
+tags: []
 technologies: []
 github: ""
 materials: []
@@ -12,8 +13,16 @@ draft: true
 cover:
   image: ""
   alt: ""
+  caption: ""
   relative: true
 ---
+
+<!-- 必須: title（タイトル）・date（日付）・description（概要）・draft（下書き）。
+その他は任意です。空文字・空リストは表示されません。
+画像は index.md と同じフォルダーに保存し、cover.image: "thumbnail.jpg" と指定します。
+cover.alt は画像の説明、cover.caption は表示するキャプションです。
+確認後に draft: false にすると公開されます。featured: true でHomeの注目記事に表示します。
+-->
 
 ## プロジェクト概要
 
@@ -31,7 +40,7 @@ cover:
 
 入力、処理、出力や、コンポーネント間の関係を入力してください。
 
-<!-- ページと同じフォルダーに画像を置く場合: ![構成図の説明](architecture.png) -->
+<!-- 同じフォルダーに diagram.png を保存したら: ![構成図の説明](diagram.png) -->
 
 ## 実装内容
 

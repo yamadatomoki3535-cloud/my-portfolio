@@ -12,9 +12,10 @@ sample: true
 featured: true
 draft: false
 cover:
-  image: "images/projects/purchase-prediction.svg"
+  image: "diagram.svg"
   alt: "行動データから購入予測を行うモデルの概念図"
-  relative: false
+  caption: "入力例の概念図です。実際の実験結果を示すものではありません。"
+  relative: true
 ---
 
 > **サンプルプロジェクト**
@@ -58,7 +59,7 @@ ECサイトでの行動データをもとに、購入の可能性を予測する
 
 ## 画像や図
 
-![行動データから前処理・学習を経て購入予測を行う流れの概念図](/images/projects/purchase-prediction.svg)
+![行動データから前処理・学習を経て購入予測を行う流れの概念図](diagram.svg)
 
 *この図はサンプルの概念図です。実際のシステム構成や実験結果を示すものではありません。*
 

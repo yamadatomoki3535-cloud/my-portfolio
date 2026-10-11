@@ -4,8 +4,8 @@
     <div class="hero-copy">
       <p class="eyebrow"><span class="eyebrow-line"></span>{{ site.Params.home.eyebrow }}</p>
       <h1 id="hero-title">{{ site.Params.home.headline }}</h1>
-      <p class="hero-affiliation">{{ site.Params.profile.affiliation }}</p>
-      <p class="hero-description">{{ site.Params.home.tagline }}</p>
+      {{ with site.Params.profile.affiliation }}<p class="hero-affiliation">{{ . }}</p>{{ end }}
+      {{ with site.Params.home.tagline }}<p class="hero-description">{{ . }}</p>{{ end }}
       <div class="hero-actions">
         <a class="button button-primary" href="{{ (site.GetPage "/projects").RelPermalink }}">制作物を見る <span aria-hidden="true">↗</span></a>
         <a class="text-link" href="{{ (site.GetPage "/about").RelPermalink }}">自己紹介 <span aria-hidden="true">→</span></a>
@@ -45,7 +45,7 @@
   {{ if or $research site.Params.showEmptySections }}
   <section class="home-section interests-section" aria-labelledby="interests-title">
     <div class="interests-intro"><p class="eyebrow">RESEARCH INTERESTS</p><h2 id="interests-title">いま、関心のあること。</h2><p>言語、画像、そしてデータ。<br>それぞれをつなぐ技術を学んでいきます。</p><a class="text-link" href="{{ (site.GetPage "/research").RelPermalink }}">研究について <span aria-hidden="true">→</span></a></div>
-    <ol class="interest-list">{{ range $i, $interest := site.Params.profile.interests }}<li><span class="interest-number">{{ printf "%02d" (add $i 1) }}</span><span>{{ $interest }}</span><span class="interest-plus" aria-hidden="true">+</span></li>{{ end }}</ol>
+    {{ with site.Params.profile.interests }}<ol class="interest-list">{{ range $i, $interest := . }}<li><span class="interest-number">{{ printf "%02d" (add $i 1) }}</span><span>{{ $interest }}</span><span class="interest-plus" aria-hidden="true">+</span></li>{{ end }}</ol>{{ end }}
   </section>
   {{ end }}
 

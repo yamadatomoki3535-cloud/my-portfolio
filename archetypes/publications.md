@@ -1,7 +1,9 @@
 ---
-title: "{{ replace .Name "-" " " | title }}"
+title: "{{ replace (path.Base (path.Dir .File.Path)) "-" " " | title }}"
 date: {{ .Date }}
 description: "実際の論文・発表の概要を入力してください。"
+categories: []
+tags: []
 authors: []
 venue: ""
 presentation: ""
@@ -10,6 +12,9 @@ materials: []
 sample: false
 draft: true
 ---
+
+<!-- 必須: title・date・description・draft。その他は任意です。
+空文字・空リストは表示されません。確認後に draft: false にすると公開されます。 -->
 
 ## 論文・発表の概要
 

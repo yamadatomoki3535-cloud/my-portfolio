@@ -1,37 +1,71 @@
 # 個人ポートフォリオ
 
-静岡大学 情報学部の学生向けに、制作物・研究・受賞歴・論文や発表を継続して公開できる日本語のポートフォリオです。Hugo と PaperMod を使用し、内容は Markdown、プロフィールや表示設定は `hugo.toml` で管理します。GitHub Pages の無料プランで公開できます。
+Hugo と PaperMod を使った日本語のポートフォリオです。記事本文と記事専用の画像は `content/`、共通プロフィールは `hugo.toml` で管理します。Markdown と画像を追加・編集すれば、一覧やトップページに反映されます。日常の更新で HTML や CSS を編集する必要はありません。
 
-初期の氏名や自己紹介は編集用のプレースホルダーです。「ECサイトの購入予測モデル」は入力例であり、実際の完成・発表・性能を示しません。サンプルの日付は登録例です。未提供の研究成果、受賞歴、論文、メールアドレスは登録していません。
+既存の「ECサイトの購入予測モデル」は入力例です。実際の完成・発表・性能を示すものではなく、日付も登録例です。研究成果・受賞歴・論文・実験結果には確認済みの事実を記入し、未提供の内容は下書きの入力用文言として扱ってください。
 
-## 使用技術とファイル構成
+## どのファイルを編集するか
 
-- **Hugo 0.147.9**：静的サイト生成。標準版で動作し、Extended 版は必須ではありません。
-- **PaperMod**：Git サブモジュール `themes/PaperMod`。リポジトリで固定したコミットを使用します。
-- **HTML / CSS**：最小限のレイアウト調整、レスポンシブ対応。ライト・ダーク切り替えは PaperMod の機能です。
-- **Markdown**：プロフィールページ、各プロジェクト・研究・実績の記事。
-- **GitHub Actions / GitHub Pages**：`main` への push で自動ビルド・公開。
+| 編集する場所 | 変わる内容 |
+| --- | --- |
+| `content/projects/記事のURL名/index.md` | プロジェクトのタイトル・概要・本文・公開状態 |
+| `content/research/記事のURL名/index.md` | 研究のタイトル・概要・本文・公開状態 |
+| 記事の `index.md` と同じフォルダー | その記事のサムネイル・図・写真 |
+| `content/projects/_index.md` など | 各一覧ページのタイトルと説明文 |
+| `content/about/index.md` | About の追加説明・経歴などの文章 |
+| `content/contact/index.md` | Contact の説明文 |
+| `hugo.toml` の `[params.profile]` | Home・About・Contact で使う氏名・所属・自己紹介・GitHub などの共通情報 |
+| `hugo.toml` の `[params.home]` | Home の見出し `headline`、導入文 `tagline` など |
+| `hugo.toml` の `title`・`baseURL`・`[params]`・`menu.main` | サイト名・公開 URL・全体設定・メニュー |
+| `archetypes/` | 次に作る記事の初期テンプレート。作成済みの記事は変わりません |
+| `layouts/` | Home・一覧・記事詳細などの表示レイアウト |
+| `assets/css/extended/` | 色・文字サイズ・余白・スマートフォン向けのデザイン調整 |
+| `static/images/` | 複数ページで共有する画像 |
+| `static/files/` | 公開する PDF などの共有資料 |
+
+ファイル構成は次のとおりです。記事ごとのフォルダーに本文と画像をまとめる構成を「ページバンドル」と呼びます。
 
 ```text
-hugo.toml                     サイト・プロフィール・メニュー設定
-content/about/index.md        自己紹介
-content/contact/index.md      連絡先
-content/projects/             プロジェクト一覧と詳細
-content/research/             研究一覧と詳細
-content/awards/               受賞歴一覧と詳細
-content/publications/         論文・発表一覧と詳細
-archetypes/                   記事追加時のテンプレート
-layouts/                      ホーム・一覧・表示部品のカスタマイズ
-assets/css/extended/          PaperModに追加するスタイル
-scripts/verify_site.py        ビルド・記事追加・公開パスの自動確認
-static/images/                サムネイルや図
-themes/PaperMod/              固定バージョンのテーマ
-.github/workflows/hugo.yml    GitHub Pagesへの公開処理
+my-portfolio/
+  hugo.toml
+  content/
+    about/index.md
+    contact/index.md
+    projects/
+      _index.md
+      記事のURL名/
+        index.md
+        thumbnail.jpg
+        diagram.png
+    research/
+      _index.md
+      記事のURL名/
+        index.md
+        diagram.png
+    awards/
+    publications/
+  archetypes/
+    projects.md
+    research.md
+    awards.md
+    publications.md
+  layouts/
+  assets/css/extended/
+  static/
+    images/
+    files/
+  scripts/verify_site.py
+  themes/PaperMod/
+  .github/workflows/hugo.yml
 ```
 
-`public/` などのビルド成果物は Git に含めません。テーマ本体を直接編集せず、サイト固有の設定や `layouts/`、`assets/css/extended/` を変更してください。
+画像が不要な記事には画像ファイルを置く必要はありません。既存の入力例は `content/projects/ec-purchase-prediction/index.md` と同じフォルダーの `diagram.svg` で管理しています。`_index.md` は一覧ページ、`index.md` は個別記事です。
+
+`public/` はビルドで生成されるため直接編集せず、Git にも含めません。PaperMod 本体を変更する場合は、テーマを直接編集するより `layouts/` と `assets/css/extended/` でサイト側の調整を行ってください。
 
 ## 開発環境の準備（Windows PowerShell）
+
+Hugo 0.147.9 の標準版と、リポジトリでコミットを固定した PaperMod サブモジュールを使用します。Extended 版は必須ではありません。以下のコマンドは Windows PowerShell で実行できます。
 
 ### 1. Git を用意する
 
@@ -78,203 +112,332 @@ hugo version
 
 ### 3. リポジトリを取得する
 
-実際の所有者に合わせて URL を変更してください。
-
 ```powershell
 git clone --recurse-submodules https://github.com/yamadatomoki3535-cloud/my-portfolio.git
 Set-Location my-portfolio
 git submodule update --init --recursive
 ```
 
-既に clone 済みの場合は最後のコマンドを実行してください。テーマは GitHub Actions でもサブモジュールとして取得するため、`.gitmodules` とテーマの固定コミットを Git に含めます。
+すでに取得済みなら、その `my-portfolio` フォルダーで最後のコマンドを実行してください。以降のコマンドはすべて `hugo.toml` があるフォルダーで実行します。
 
-## ローカルでの起動とビルド
+## プロフィールと全体設定を編集する
 
-`hugo.toml` のあるフォルダーで実行します。
-
-```powershell
-hugo server --buildDrafts
-```
-
-ターミナルに表示された URL（通常 `http://localhost:1313/my-portfolio/`）をブラウザーで開きます。編集するとプレビューが更新されます。停止は `Ctrl+C` です。`--buildDrafts` は `draft: true` の記事もプレビューに含めます。
-
-公開と同じ設定でビルドするには次を実行します。公開用ビルドには下書きが含まれません。
-
-```powershell
-hugo --gc --minify
-```
-
-生成先は `public/` です。`public/index.html` を直接開くとパスの条件が異なるため、画面確認には `hugo server` を使ってください。
-
-## GitHub Pages への公開
-
-1. ファイル一式を自身の GitHub リポジトリ `my-portfolio` の `main` ブランチに反映します。テーマのサブモジュールも含めてください。
-2. GitHub のリポジトリで **Settings → Pages → Build and deployment → Source** を **GitHub Actions** にします。
-3. `main` に push すると **Actions → Deploy Hugo site to GitHub Pages** が動きます。必要なら同じ画面から **Run workflow** を実行します。
-4. 成功後、`https://USERNAME.github.io/my-portfolio/` を開きます。初回の反映には時間がかかる場合があります。
-
-Actions は Hugo 0.147.9 を公式のチェックサムで検証してインストールし、ビルドした `public/` を Pages に公開します。ビルドと公開のジョブを分け、公開ジョブだけに Pages の書き込み権限を与えています。個人アクセストークンや有料サービスは必要ありません。
-
-`hugo.toml` の `baseURL` を実際の公開 URL に合わせます。末尾の `/` も含めてください。
-
-```toml
-baseURL = "https://USERNAME.github.io/my-portfolio/"
-```
-
-GitHub Actions では Pages が返す実際の URL を使用するため、所有者やリポジトリ名を変更しても公開ビルドの URL は追従します。ローカルビルド、プレビュー、サイト設定との整合のため `baseURL` も更新してください。内部リンクや画像は Hugo の URL 処理を通し、`/my-portfolio/` に対応します。GitHub Pages はルートに生成された `404.html` をエラーページとして使用します。
-
-ワークフローが失敗したら Actions の該当ジョブを開いてエラーを確認してください。特に Pages の Source 設定、テーマのサブモジュール、Hugo のバージョンを確認します。組織の権限制限がある場合は管理者による Pages の有効化が必要なことがあります。
-
-## プロフィールと全体設定の編集
-
-`hugo.toml` の `[params.profile]` を編集します。
+共通プロフィールは `hugo.toml` の既存の `[params.profile]` を編集します。Home と About の自己紹介、Contact の GitHub リンクはこの設定を参照するため、各ページで同じ情報を書き直す必要はありません。
 
 ```toml
 [params.profile]
 name = "あなたの氏名"
-affiliation = "静岡大学 情報学部"
-bio = "ここに短い自己紹介を入力します。"
-github = "https://github.com/USERNAME"
-interests = ["機械学習・深層学習", "大規模言語モデル（LLM）", "Vision-Language Model（VLM）", "情報検索", "LoRA"]
-skills = ["Python", "Git", "Hugo"]
+affiliation = "あなたの所属"
+bio = "ここに自己紹介を入力します。"
+github = "https://github.com/あなたのユーザー名"
+interests = ["関心のある分野"]
+skills = ["実際に使用している技術"]
 skillsNote = ""
 ```
 
-上記のスキルは記入例です。自分の内容に書き換えてください。初期設定の `skillsNote` は入力例である旨の注記です。実際のスキルに更新したら空文字にすると注記を非表示にできます。About に表示するプロフィールと Home の紹介はこの設定を利用します。追加の自己紹介文章は `content/about/index.md` で編集できます。Contact の説明は `content/contact/index.md` で編集します。公開したくない項目は空にし、未提供のメールアドレスなどを追記する必要はありません。
+これは記入例です。既存の値を自分の情報に書き換えてください。任意の GitHub URL や文字列は `""`、リストは `[]` にすると表示されません。`skillsNote` はスキルの補足文で、必要なときだけ記入します。
 
-サイト名は `title`、検索エンジン向けの説明は `[params]` の `description`、Home の文言は `[params.home]` の `eyebrow`・`headline`・`tagline` で変更します。
+`content/about/index.md` の `{{< profile >}}` が共通の自己紹介を表示します。追加の経歴や文章は、その下に Markdown で記入します。Contact の文章は `content/contact/index.md` で編集してください。
 
-空にした GitHub URL、スキルや興味分野のリストは About から非表示になります。Home の最新の成果・発表は実際の記事を登録したときだけ表示され、`sample: true` の入力例は含まれません。
+Home の大きな見出しは `hugo.toml` の `[params.home]` の `headline` です。サイト名は先頭の `title`、サイト全体の説明は `[params]` の `description` で変更します。
 
 ```toml
-[params]
-showEmptySections = false
+[params.home]
+eyebrow = "RESEARCH & DEVELOPMENT"
+headline = "あなたの見出し"
+tagline = "トップページの導入文"
 ```
 
-この設定で、記事未登録の Research / Awards / Publications のナビゲーションや Home の空セクションを非表示にできます。初期設定は `true` で、未登録であることを明示します。ページを見せたい場合は `true` に戻してください。設定ファイルに同じ `[params]` を重複追加せず、既存のキーを書き換えてください。
+既存の `[params]` の `showEmptySections` を `false` にすると、記事未登録の Research / Awards / Publications のナビゲーションと Home の空セクションを非表示にできます。初期設定は `true` です。同じ `[params]` や `[params.profile]` を末尾に追加せず、既存の項目を編集してください。
 
-## 新しいプロジェクトの追加
+## 新しい記事を追加する
 
-1. 次のコマンドでテンプレートから記事を作成します。`my-project` は英数字とハイフンによる URL 用の名前です。
+### 1. テンプレートから下書きを作る
 
-   ```powershell
-   hugo new content projects/my-project/index.md
-   ```
+プロジェクトの記事なら次を実行します。`my-project` は記事の URL 用の名前です。英小文字・数字・ハイフンを使い、別の記事では別の名前にしてください。
 
-2. 作成した `content/projects/my-project/index.md` をテキストエディターで開き、先頭の `---` に挟まれた設定（front matter）と本文を編集します。
+```powershell
+hugo new content projects/my-project/index.md
+```
 
-   ```yaml
-   title: "プロジェクト名"
-   date: 2026-10-10
-   description: "一覧に表示する短い概要"
-   draft: false
-   featured: true
-   sample: false
-   categories: ["機械学習"]
-   technologies: ["Python", "scikit-learn"]
-   github: "https://github.com/USERNAME/REPOSITORY"
-   cover:
-     image: "images/projects/my-project.jpg"
-     alt: "画像の内容を説明する文章"
-   ```
-
-3. 本文に「概要」「背景と目的」「使用技術」「システム構成」「実装内容」「実験結果や成果」などを Markdown で記入します。未実施の結果は空にするか、入力予定であることを明記してください。
-4. `hugo server --buildDrafts` で確認してから GitHub に反映します。
-
-`draft: true` の間は公開されません。公開時に `false` にします。`featured: true` は Home の注目項目への表示指定です。`sample: true` は実績と区別するためのサンプル表記を付けます。実際の制作物を登録する際は内容を確認して `sample: false` にしてください。
-
-一覧は公開記事の日付が新しい順になります。未来の日付の記事は Hugo の標準動作で通常の公開ビルドに含まれないため、実際の登録日・制作日にしてください。画像や GitHub URL は省略できます。ファイルを追加するだけで一覧に反映され、一覧用の HTML 編集は必要ありません。
-
-## 研究ページの追加
+研究記事の場合は次を使います。
 
 ```powershell
 hugo new content research/my-research/index.md
 ```
 
-`content/research/my-research/index.md` のタイトル、日付、概要、`technologies`、画像、本文を編集します。テンプレートには研究概要・背景・目的・提案手法・実験内容・結果と考察などの項目があります。
+それぞれ `archetypes/projects.md`・`archetypes/research.md` を使って作成され、初期状態は `draft: true`（下書き）です。`content/projects/my-project/index.md` または `content/research/my-research/index.md` をエディターで開きます。生成されたタイトルが `Index` などになっている場合も、実際のタイトルに書き換えてください。
 
-関連資料は front matter の `materials` で設定できます。
+### 2. 設定と本文を埋める
+
+先頭の `---` と `---` に挟まれた部分が front matter（記事の設定）です。その下が Markdown の本文です。次は、画像をまだ追加していない状態でも使えるコピー用の例です。日付は実際の記事の日付に置き換えてください。
+
+```markdown
+---
+title: "記事のタイトルを入力"
+date: 2026-10-11
+description: "記事の概要を1〜2文で入力します。"
+draft: true
+featured: false
+categories: []
+tags: []
+technologies: []
+github: ""
+materials: []
+cover:
+  image: ""
+  alt: ""
+  caption: ""
+---
+
+## 概要
+
+取り組んだ内容を入力してください。
+
+## 背景と目的
+
+課題と目的を入力してください。
+
+## 取り組みの内容
+
+実際に行った制作・研究の内容を入力してください。
+
+## 結果と考察
+
+確認済みの結果を入力してください。未実施なら、その旨を記載してください。
+```
+
+YAML の `:` の後には半角スペースが必要です。`cover` の内側などは半角スペース2個で字下げします。`true`・`false` は引用符で囲まず、文字列は `"..."`、リストは `["項目1", "項目2"]` と書いてください。ファイルは UTF-8 で保存します。
+
+### 3. 画像を同じフォルダーに置く
+
+記事専用の画像は `index.md` と同じフォルダーへコピーします。コピー元のパスは実際の画像に置き換えてください。
+
+```powershell
+Copy-Item -LiteralPath "C:\Users\あなた\Pictures\thumbnail.jpg" -Destination ".\content\projects\my-project\thumbnail.jpg"
+Copy-Item -LiteralPath "C:\Users\あなた\Pictures\diagram.png" -Destination ".\content\projects\my-project\diagram.png"
+```
+
+サムネイルは front matter の `cover` を次のように編集します。
+
+```yaml
+cover:
+  image: "thumbnail.jpg"
+  alt: "画像に写っている内容の説明"
+  caption: "サムネイルの補足説明"
+```
+
+本文の図は次のように書きます。
+
+```markdown
+![図の内容を説明する文章](diagram.png)
+```
+
+画像を使わない場合は、`cover:` 内の `image: ""` のままで構いません。サムネイル・キャプションは未入力なら表示されません。`alt` は画像が読み込めない場合や読み上げ時に使う説明なので、画像を設定するときは内容を記入してください。
+
+### 4. 下書きを確認して公開する
+
+```powershell
+hugo server --buildDrafts
+```
+
+ターミナルに表示された URL（通常 `http://localhost:1313/my-portfolio/`）をブラウザーで開きます。保存すると表示が更新され、停止は `Ctrl+C` です。この起動方法では下書きも表示されます。
+
+タイトル・概要・画像・本文を確認したら、記事の `draft: true` を `draft: false` に変更します。入力用の文章は実際の内容に置き換え、不要な本文見出しも削除します。
+
+公開時の表示を確認するには、下書き確認用サーバーを `Ctrl+C` で停止して次を実行します。
+
+```powershell
+hugo server
+```
+
+`draft: true` の記事は一覧・Home・記事詳細に公開されません。日付が未来の記事も通常のビルドでは公開されないため、プレビューに出ない場合は `date` を確認してください。未来の日付も含めて確認するときは `hugo server --buildDrafts --buildFuture` を使います。
+
+Markdown を追加すると、各一覧は `date` の新しい順に自動更新されます。`featured: true` の Projects / Research は Home の注目記事にも表示されます。一覧用 HTML や `hugo.toml` に記事を登録する作業は不要です。ローカルで設定を変更しただけでは GitHub Pages の内容は変わらず、後述の GitHub への反映後に公開されます。
+
+## front matter の各項目
+
+### 必須項目
+
+以下は、この記事テンプレートを使うときに必ず確認する項目です。
+
+| 項目 | 意味 | 記入例 |
+| --- | --- | --- |
+| `title` | 一覧・記事詳細に表示するタイトル | `title: "制作物のタイトル"` |
+| `date` | 記事の日付。新しい順に並べる基準 | `date: 2026-10-11` |
+| `description` | 一覧・記事詳細・検索向けの短い概要 | `description: "取り組みの概要です。"` |
+| `draft` | 下書きなら `true`、公開なら `false` | `draft: true` |
+
+### 任意項目
+
+使わない文字列は `""`、リストは `[]`、表示指定は `false` にするか、項目自体を省略します。空の情報の見出しやリンクは表示されません。本文に自分で書いた見出しは自動では消えないため、不要な見出しは本文から削除してください。
+
+| 項目 | 意味 | 記入例 |
+| --- | --- | --- |
+| `featured` | Home の Projects / Research 注目記事へ表示 | `featured: true` |
+| `categories` | 大きな分類 | `categories: ["制作記録"]` |
+| `tags` | より細かいキーワード | `tags: ["Hugo", "Web"]` |
+| `technologies` | 実際に使った技術の一覧 | `technologies: ["Python", "Hugo"]` |
+| `github` | その記事の公開 GitHub リポジトリ | `github: "https://github.com/ユーザー名/リポジトリ名"` |
+| `cover.image` | サムネイル。記事内の画像名、共有画像のパス、外部 URL | `image: "thumbnail.jpg"`（`cover:` の内側） |
+| `cover.alt` | サムネイルの画像内容の説明 | `alt: "アプリの一覧画面"` |
+| `cover.caption` | サムネイルの下に表示する補足 | `caption: "試作版の画面"` |
+| `materials` | 関連資料のリスト。各資料に `label` と `url` を設定 | 下の記入例を参照 |
+| `models` | 研究で実際に使ったモデルの一覧 | `models: ["使用したモデル名"]` |
+| `sample` | 入力例であることを示す表示 | `sample: true` |
+
+`sample: true` の記事は入力例の注記を付けて表示され、Home の最新の成果・発表には含まれません。実際の記事は `sample: false` または省略します。
+
+関連資料は、同じ front matter 内に次のように追加します。URL は実際の公開可能な資料に置き換えてください。未登録なら `materials: []` にします。`label` または `url` が空の資料は表示されません。
 
 ```yaml
 materials:
   - label: "発表スライド"
     url: "https://example.com/slides"
+  - label: "補足資料 PDF"
+    url: "files/supplement.pdf"
 ```
 
-この URL は書式例です。実際の資料に置き換えるか、未登録なら `materials: []` にしてください。Markdown 本文から `[資料名](https://実際のURL)` と書いてもリンクできます。研究室の日記や活動記録の機能は含めていません。
+## Markdown の書き方
 
-## 受賞歴・論文や発表の追加
+次の例を記事の本文にコピーして使えます。タイトルは front matter に設定するため、本文の大見出しは `##` から始めます。
 
-実際の実績ができた際に追加してください。記事未登録の一覧には未登録の案内が表示されます。
+````markdown
+## 見出し
+
+段落の間には空行を入れます。**太字**で強調できます。
+
+### 小見出し
+
+- 箇条書きの項目1
+- 箇条書きの項目2
+
+1. 手順1
+2. 手順2
+
+[外部サイトを開く](https://example.com/)
+
+[プロジェクト一覧へ](/projects/)
+
+[別のプロジェクト記事へ](/projects/my-project/)
+
+![図の内容を説明する文章](diagram.png)
+
+本文中の短いコードは `print("Hello")` のように書きます。
+
+```python
+message = "Hello"
+print(message)
+```
+````
+
+サイト内リンクは例のようにサイト内のパスを使うと、表示時に `/my-portfolio/` を考慮します。別の記事へのリンクは、その記事を公開してから公開サイトで確認してください。見本の `my-project` は実際の記事の URL 名に置き換えます。Markdown に Windows の `C:\...` や `\` の区切りを記入せず、URL の `/` を使用します。
+
+本文の図に補足文を付ける場合は figure ショートコードも使えます。
+
+```markdown
+{{< figure src="diagram.png" alt="図の内容を説明する文章" caption="図の補足説明" >}}
+```
+
+## 共有画像・PDF を追加する
+
+複数ページで使う画像は `static/images/`、共有 PDF は `static/files/` に置きます。記事専用の画像は、その記事の `index.md` と同じフォルダーに置くのを基本にしてください。
+
+```powershell
+New-Item -ItemType Directory -Force -Path ".\static\images" | Out-Null
+New-Item -ItemType Directory -Force -Path ".\static\files" | Out-Null
+Copy-Item -LiteralPath "C:\Users\あなた\Pictures\shared-diagram.png" -Destination ".\static\images\shared-diagram.png"
+Copy-Item -LiteralPath "C:\Users\あなた\Documents\slides.pdf" -Destination ".\static\files\slides.pdf"
+```
+
+Markdown には `static/` を付けず、次のように書きます。
+
+```markdown
+![共有の構成図](images/shared-diagram.png)
+
+[スライド PDF](files/slides.pdf)
+```
+
+front matter の共有サムネイルは `cover:` 内の `image` に `"images/shared-diagram.png"` を指定します。論文の PDF は `pdf: "files/slides.pdf"` と指定できます。ファイル名は英数字とハイフンを基本にし、大文字・小文字も実際の名前と一致させます。図や資料は、公開できるものを使ってください。
+
+## 受賞歴・論文や発表を追加する
+
+確認済みの実績がある場合に、次のテンプレートから作成します。どちらも下書きで作られます。
 
 ```powershell
 hugo new content awards/my-award/index.md
 hugo new content publications/my-publication/index.md
 ```
 
-共通の `title`・`date`・`description`・`draft` と本文を編集し、次の項目を設定します。
+共通の必須項目と本文を編集し、必要に応じて次の任意項目を設定してください。未登録のまま、受賞・掲載されたように記入する必要はありません。
 
 | 種類 | 項目 | 内容 |
 | --- | --- | --- |
 | 受賞歴 | `organization` | 主催団体 |
-| 受賞歴 | `materials` | 関連リンク（`label` / `url` のリスト） |
 | 論文・発表 | `authors` | 著者名のリスト |
 | 論文・発表 | `venue` | 学会名・掲載先 |
 | 論文・発表 | `presentation` | 口頭発表・ポスターなどの形式 |
-| 論文・発表 | `pdf` | 論文 PDF の URL または静的ファイルのパス |
-| 論文・発表 | `materials` | 関連リンク（`label` / `url` のリスト） |
+| 論文・発表 | `pdf` | 公開可能な PDF の URL または `files/paper.pdf` のような共有資料パス |
+| 共通 | `materials` | `label` / `url` の組による関連リンク |
 
-使用しない項目は空文字や空のリストにします。テンプレート内の入力用文言は公開前に書き換えてください。
+## 記事や画像を削除する
 
-## 画像・図・PDF の追加
+記事を一時的に非公開にする場合は、その記事の `draft` を `true` に戻します。完全に削除する場合は、記事のフォルダーを画像ごと削除します。別の記事からその記事にリンクしている場合は、リンクも編集してください。
 
-### 複数の記事で共有する画像
-
-`static/images/` の中に保存します。例えば `static/images/projects/my-project.jpg` は front matter では `images/projects/my-project.jpg` と指定します。`static/` 自体は URL に書きません。
+次は `content/projects/my-project/` を削除する例です。`my-project` を削除したい記事の URL 名に置き換え、表示される絶対パスが対象の記事フォルダーであることを確認してください。最後のコマンドで削除確認が表示されます。
 
 ```powershell
-New-Item -ItemType Directory -Force static/images/projects | Out-Null
-Copy-Item "C:\Users\あなた\Pictures\thumbnail.jpg" "static/images/projects/my-project.jpg"
+$Article = Get-Item -LiteralPath ".\content\projects\my-project" -ErrorAction Stop
+$ProjectsRoot = (Resolve-Path -LiteralPath ".\content\projects").Path.TrimEnd('\') + '\'
+if (-not $Article.FullName.StartsWith($ProjectsRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw "削除対象が projects フォルダーの外にあります。"
+}
+$Article.FullName
+Remove-Item -LiteralPath $Article.FullName -Recurse -Confirm
 ```
 
-本文には次のように書きます。
+研究記事なら上のパスの `projects` をすべて `research` に置き換えてください。
 
-```markdown
-![購入予測モデルのシステム構成](images/projects/system-diagram.png)
+画像だけを削除するときは、まず Markdown 内の `![...](画像名)`、figure、front matter の `cover` などから参照を削除します。その後、対象画像だけを削除します。
+
+```powershell
+Get-Item -LiteralPath ".\content\projects\my-project\diagram.png"
+Remove-Item -LiteralPath ".\content\projects\my-project\diagram.png" -Confirm
 ```
 
-### 記事専用の画像（ページバンドル）
+共有画像や PDF は他の記事でも使っている場合があるため、エディターの全体検索でファイル名の参照を確認してから削除してください。削除後もローカルで確認し、GitHub に変更を反映します。
 
-`index.md` と同じフォルダーに画像を置くと、記事とまとめて管理できます。
+## ローカルでビルド・確認する
 
-```text
-content/projects/my-project/
-  index.md
-  thumbnail.jpg
-  system-diagram.png
+公開用ビルドは次を実行します。下書きと未来の日付の記事は含まれません。
+
+```powershell
+hugo --gc --minify
 ```
 
-```yaml
-cover:
-  image: "thumbnail.jpg"
-  alt: "画面の説明"
+生成先は `public/` です。`public/index.html` を直接開くと公開時と URL の条件が異なるため、画面確認には `hugo server` を使用します。
+
+Python 3.10 以上がある場合は、次の自動チェックも利用できます。追加パッケージは不要で、Python はサイトの起動・記事更新・公開には必要ありません。
+
+```powershell
+python scripts/verify_site.py --hugo hugo
 ```
 
-```markdown
-![システム構成](system-diagram.png)
-```
+一時フォルダーで記事を追加して確認するため、元の Markdown と `public/` は変更しません。ナビゲーション、SEO、404、`/my-portfolio/` 配下のリンク、記事の画像・PDF、テンプレート、日付順、ページ送り、下書き、空セクションの表示を確認します。
 
-キャプションやサイズ指定には Hugo の標準 figure ショートコードも使えます。
+公開前には、次の点をブラウザーでも確認してください。
 
-```markdown
-{{< figure src="system-diagram.png" alt="システム構成" caption="システムの構成図" >}}
-```
+- `hugo server --buildDrafts` で新しい記事と画像が表示される。
+- `hugo server` では下書きの記事が一覧・Home・記事詳細に出ない。
+- 一覧の記事が新しい日付から並び、`featured: true` の記事が Home に表示される。
+- スマートフォン相当の幅（320 / 390 px など）で本文・画像・ナビゲーションが画面内に収まる。ブラウザーの開発者ツールで幅を変更できる。
+- ライト・ダーク両方で本文を読みやすく、長いコードや表も操作できる。
+- `/my-portfolio/` の下で画像・記事・一覧・PDF のリンクを開ける。
+- 入力用の文章や未確認の実績が公開されない。
 
-ファイル名は英数字とハイフンを使い、パスは Windows の `\` ではなく `/` で記入します。先頭 `/` を付けないサイト内パスを推奨します。外部画像は `https://...` で指定できます。PDF は `static/files/` に保存し、`pdf: "files/paper.pdf"` のように記入します。公開する権利のある画像・資料を使用してください。
+## GitHub に変更を反映する
 
-## GitHub への変更反映
-
-通常は `main` ブランチの作業フォルダーで編集します。作業開始前に状態を確認し、未保存の変更がない場合に取得します。
+作業を始める前にブランチと変更の状態を確認します。未コミットの変更がなく、`main` で作業しているときに最新の変更を取得してください。
 
 ```powershell
 git status
@@ -282,7 +445,7 @@ git branch --show-current
 git pull --ff-only origin main
 ```
 
-編集とローカル確認後、差分を確認して反映します。
+編集とローカル確認を終えたら差分を確認し、変更を commit・push します。`git status` と `git diff` で、公開したいファイルだけが変更されていることを確認してください。
 
 ```powershell
 git status
@@ -292,47 +455,32 @@ git commit -m "Update portfolio content"
 git push origin main
 ```
 
-最初の commit で氏名・メールの Git 設定を求められた場合は、GitHub のアカウント設定を確認して設定してください。GitHub の非公開用 noreply アドレスも使用できます。Git 設定のメールを Contact に掲載する必要はありません。
+最初の commit で氏名・メールの Git 設定を求められた場合は、自分の GitHub アカウントの設定を確認して設定します。GitHub の非公開用 noreply アドレスも使用できます。Git 設定用メールを Contact に掲載する必要はありません。
 
-このクラウド作業のブランチが `work` など `main` 以外の場合、上の push は作業内容を自動で main に移しません。初回は変更を commit して作業ブランチを push し、GitHub 上で **Pull Request → main に merge** して公開します。
+`main` 以外の作業ブランチでは、変更を現在のブランチに push して GitHub 上で Pull Request を作り、`main` に merge します。
 
 ```powershell
-git branch --show-current
 git status
+git branch --show-current
 git add .
-git commit -m "Create Japanese portfolio site"
+git commit -m "Update portfolio content"
 git push -u origin HEAD
 ```
 
-競合が出た場合は既存の変更を確認してください。`--force` を使って上書きする必要はありません。テーマの取得には `git submodule update --init --recursive` を使い、通常のコンテンツ更新ではテーマを更新しません。
+競合が出た場合は、変更内容を確認して解決してください。通常のコンテンツ更新で PaperMod サブモジュールを更新する必要はありません。
 
-## 公開前の確認
+## GitHub Pages の公開設定
 
-- `hugo --gc --minify` が成功する。
-- Home と各ページ、プロジェクト詳細、ヘッダー・フッターのリンクを確認する。
-- 狭い画面幅、スマートフォン、ライト・ダーク両方で表示を確認する。
-- 追加した記事の `draft`・日付・画像パスを確認する。
-- プレースホルダーや未確認の実績が公開されないよう確認する。
-- Actions 成功後、`/my-portfolio/` の公開 URL で CSS・画像・内部リンクを確認する。
+公開先は `https://yamadatomoki3535-cloud.github.io/my-portfolio/` です。初回は GitHub のリポジトリで **Settings → Pages → Build and deployment → Source** を **GitHub Actions** に設定します。
 
-### 自動チェック（任意）
+`main` に push または merge すると **Actions → Deploy Hugo site to GitHub Pages** が動きます。成功したら公開サイトを開き、今回の記事・画像・リンクを確認してください。反映には時間がかかる場合があります。手動で実行する場合は同じ画面の **Run workflow** を使います。
 
-Python 3.10 以上がある場合、次の PowerShell コマンドでビルドと記事追加をまとめて確認できます。追加パッケージは不要です。Python はサイトの起動や公開には必要ありません。
+Actions は Hugo 0.147.9 を公式チェックサムで検証して導入し、下書きを含めずに生成した `public/` を公開します。テーマも固定コミットのサブモジュールとして取得します。公開ジョブに必要な権限を設定しており、個人アクセストークンは不要です。
 
-```powershell
-python scripts/verify_site.py --hugo hugo
+公開 URL を変更した場合は `hugo.toml` の `baseURL` を末尾 `/` まで含めて更新してください。GitHub Actions は Pages が返す URL を使ってビルドしますが、ローカル確認でも同じ設定を使えるよう、`baseURL` も実際の URL に合わせます。
+
+```toml
+baseURL = "https://yamadatomoki3535-cloud.github.io/my-portfolio/"
 ```
 
-一時フォルダー内で各種記事を作成して検証し、元の Markdown と `public/` は変更しません。ナビゲーション、SEO、404、`/my-portfolio/` 配下のリンク、画像、PDF、記事テンプレート、日付順、ページ送り、下書き、空セクションの非表示を確認します。
-
-### この実装での確認結果
-
-クラウド環境で Hugo 0.147.9 による公開用ビルドと上記の自動チェックに成功しました。Chromium でトップ・各ページ・詳細・404を確認し、320 / 390 / 768 / 1440 px の画面幅で横はみ出しがないこと、ナビゲーションと詳細から一覧への移動、画像の読み込み、ライト・ダークの切り替えと保存、キーボードの本文移動を確認しています。参考サイトは直接表示できなかったため、公開ソースから構成を確認しました。
-
-GitHub Actions の実行と実際の GitHub Pages 公開は未実施です。上記の Settings 設定と main への反映後、公開 URL でも確認してください。Windows PowerShell と実機スマートフォンでの実行は、この Linux 環境では実施していません。
-
-クラウド環境の Hugo は `/workspace/.local/bin/hugo` にあります。次回の作業用にインストール・起動手順を環境設定へ保存します。ローカルの Windows では、前述の準備手順で導入した `hugo` を使用します。
-
-## デザインの参考
-
-[参考サイト](https://yurokanada.github.io/my-portfolio/) と PaperMod の、余白を活かした情報整理やシンプルなナビゲーションを参考にした独自のサイトです。参考サイトの文章・画像・氏名・研究成果は使用していません。
+ワークフローが失敗したら Actions の該当ジョブを開き、エラーを確認します。Pages の Source、PaperMod のサブモジュール、Hugo のバージョンが確認箇所です。公開後にも `/my-portfolio/` 配下の CSS・画像・内部リンクを確認してください。
