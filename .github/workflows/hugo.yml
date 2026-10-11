@@ -58,6 +58,11 @@ jobs:
           TZ: Asia/Tokyo
         run: hugo --gc --minify --baseURL "${PAGES_BASE_URL%/}/"
 
+      - name: Verify Markdown workflow and repository subpath links
+        env:
+          PYTHONUTF8: "1"
+        run: python3 scripts/verify_site.py --hugo hugo
+
       - name: Upload static site
         uses: actions/upload-pages-artifact@v3
         with:

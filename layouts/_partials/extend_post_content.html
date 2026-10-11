@@ -1,7 +1,7 @@
 {{ if in (slice "projects" "research" "awards" "publications") .Section }}
 {{ $metadata := or .Params.categories .Params.technologies .Params.models .Params.organization .Params.authors .Params.venue .Params.presentation }}
 {{ $materials := slice }}
-{{ range .Params.materials }}{{ if .url }}{{ $materials = $materials | append . }}{{ end }}{{ end }}
+{{ range .Params.materials }}{{ if and .url .label }}{{ $materials = $materials | append . }}{{ end }}{{ end }}
 {{ $links := or .Params.github .Params.pdf $materials }}
 <aside class="detail-resources" aria-label="制作・研究情報">
   {{ if or $metadata $links }}

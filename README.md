@@ -122,7 +122,7 @@ git submodule update --init --recursive
 
 ## プロフィールと全体設定を編集する
 
-共通プロフィールは `hugo.toml` の既存の `[params.profile]` を編集します。Home と About の自己紹介、Contact の GitHub リンクはこの設定を参照するため、各ページで同じ情報を書き直す必要はありません。
+共通プロフィールは `hugo.toml` の既存の `[params.profile]` を編集します。Home の所属・関心分野、About の自己紹介、Contact の GitHub リンクはこの設定を参照するため、各ページで同じ情報を書き直す必要はありません。
 
 ```toml
 [params.profile]
@@ -166,7 +166,7 @@ hugo new content projects/my-project/index.md
 hugo new content research/my-research/index.md
 ```
 
-それぞれ `archetypes/projects.md`・`archetypes/research.md` を使って作成され、初期状態は `draft: true`（下書き）です。`content/projects/my-project/index.md` または `content/research/my-research/index.md` をエディターで開きます。生成されたタイトルが `Index` などになっている場合も、実際のタイトルに書き換えてください。
+それぞれ `archetypes/projects.md`・`archetypes/research.md` を使って作成され、初期状態は `draft: true`（下書き）です。`content/projects/my-project/index.md` または `content/research/my-research/index.md` をエディターで開きます。タイトルの初期値は URL 名から生成されるので、実際の日本語タイトルに書き換えてください。
 
 ### 2. 設定と本文を埋める
 

@@ -11,6 +11,11 @@ pdf: ""
 materials: []
 sample: false
 draft: true
+cover:
+  image: ""
+  alt: ""
+  caption: ""
+  relative: true
 ---
 
 <!-- 必須: title・date・description・draft。その他は任意です。
