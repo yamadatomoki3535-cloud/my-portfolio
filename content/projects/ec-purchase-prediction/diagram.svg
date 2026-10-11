@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
+<title id="title">購入予測モデルの構成イメージ</title><desc id="desc">データ、特徴量、予測をつなぐ説明用の図。実験結果を示すものではありません。</desc>
+<defs><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#d7dce1"/></pattern></defs>
+<rect width="800" height="500" fill="#f1f3f5"/><rect width="800" height="500" fill="url(#grid)"/>
+<g font-family="Arial,sans-serif"><text x="46" y="49" fill="#858b94" font-size="12" letter-spacing="2">PURCHASE PREDICTION</text><text x="754" y="49" text-anchor="end" fill="#858b94" font-size="10" letter-spacing="1">CONCEPT / SAMPLE</text></g>
+<g fill="none" stroke="#c4cad1" stroke-width="1.5"><path d="M236 250H306M494 250H564"/><path d="M299 245l7 5-7 5M557 245l7 5-7 5"/></g>
+<rect x="76" y="171" width="160" height="158" rx="13" fill="#fff" stroke="#dce0e5"/>
+<g stroke="#929aa5" fill="none" stroke-width="1.5"><ellipse cx="156" cy="214" rx="26" ry="9"/><path d="M130 214v32c0 5 12 9 26 9s26-4 26-9v-32M130 230c0 5 12 9 26 9s26-4 26-9"/></g>
+<g fill="#525a65" font-family="Arial,sans-serif" font-size="13" text-anchor="middle"><text x="156" y="293">DATA</text></g>
+<rect x="306" y="141" width="188" height="218" rx="14" fill="#252a32"/>
+<g stroke="#69717e" stroke-width="1.2" fill="none"><path d="M354 200L400 222L446 200M354 244L400 222L446 244M354 288L400 266L446 288M400 222L400 266M354 200L400 266M446 200L400 266"/></g>
+<g fill="#d4dae3"><circle cx="354" cy="200" r="5"/><circle cx="400" cy="222" r="6"/><circle cx="446" cy="200" r="5"/><circle cx="354" cy="244" r="5"/><circle cx="446" cy="244" r="5"/><circle cx="354" cy="288" r="5"/><circle cx="400" cy="266" r="6"/><circle cx="446" cy="288" r="5"/></g>
+<text x="400" y="328" text-anchor="middle" fill="#e4e7ec" font-family="Arial,sans-serif" font-size="12" letter-spacing="1">MODEL</text>
+<rect x="564" y="171" width="160" height="158" rx="13" fill="#fff" stroke="#dce0e5"/>
+<g stroke="#b2bac4" stroke-width="1.5" fill="none"><path d="M616 209v45h57"/><rect x="627" y="234" width="7" height="20" rx="1" fill="#c3cad3" stroke="none"/><rect x="641" y="222" width="7" height="32" rx="1" fill="#959eab" stroke="none"/><rect x="655" y="205" width="7" height="49" rx="1" fill="#697583" stroke="none"/></g>
+<text x="644" y="293" text-anchor="middle" fill="#525a65" font-family="Arial,sans-serif" font-size="13">PREDICTION</text>
+<path d="M46 414H754" stroke="#dce0e5"/><text x="46" y="447" fill="#9198a2" font-family="Arial,sans-serif" font-size="11" letter-spacing="1.4">BEHAVIOR → FEATURES → PREDICTION</text>
+</svg>
